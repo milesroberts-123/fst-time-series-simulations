@@ -1,0 +1,21 @@
+# load packages
+
+import pandas as pd
+
+from snakemake.utils import min_version
+
+min_version("9.5.1")
+
+# fst simulations
+fst_params = pd.read_table(
+    "../config/fst_params.tsv", sep="\t", dtype={"ID": str}
+).set_index(["ID"], drop=False)
+
+rule all_fst_sims:
+    input:
+        #"fst_results.txt",
+        expand("msprime_results/{ID}.txt", ID=fst_params["ID"]),
+        expand("gcta_results/{ID}.fst", ID=fst_params["ID"])
+        #expand("msprime_results/{ID}.txt", ID=fst_params["ID"])
+
+include: "rules/fst_sim.smk"
